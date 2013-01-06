@@ -71,14 +71,18 @@ mvn archetype:generate
 	</tr>
       </table></para>
     </section>
+    <section>
+      <title>What make a Archetype</title>
+      <para>Archetypes are packaged up in a JAR and they consist of the archetype metadata which describes the contents of archetype and a set of Velocity templates which make up the prototype project.</para>
+    </section>
   </chapter>
 
   <chapter>
-    <title>Apache Maven</title>
-
+    <title>Guide to create Archetypes</title>
+    <para>Create a Archetype is pretty streight forward process.</para>
     <section>
       <title>Introduction</title>
-
+      
       <para>Maven is a build automation tool typically used for Java projects.
       Maven serves a similar purpose to the Apache Ant tool, but it is based
       on different concepts and works in a profoundly different manner. It can

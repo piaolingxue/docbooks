@@ -7,17 +7,14 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Beispiel Benutzerhandbuch</name>
-  <url>http://www.conceptpeople.de</url>
-  <description>Dies ist ein Beispielprojekt für ein DocBook-Handbuch (example-userguide.xml).</description>
+  <name>docbook--maven-archetypes-user-guide</name>
+  <url>http://piaolingxue.github.com</url>
+  <description>a docbook for maven-archetype user guide.</description>
 
   <properties>
-    <!-- Arbeitsverzeichnis des Docbkx-Plugins definieren -->
     <workDirectory>${basedir}/target/work/docbkx</workDirectory>
-
-    <!-- Versionen der DocBook-Komponenten -->
-    <docbook-styles.version>1.1.0</docbook-styles.version>
-    <docbkx-maven-plugin.version>2.0.13</docbkx-maven-plugin.version>
+    <docbook-styles.version>1.1.0-SNAPSHOT</docbook-styles.version>
+    <docbkx-maven-plugin.version>2.0.14</docbkx-maven-plugin.version>
     <docbook.version>5.0-all</docbook.version>
     <fop-hyph.version>1.2</fop-hyph.version>
 
@@ -27,7 +24,7 @@
   <build>
     <plugins>
       <plugin>
-	<!-- DocBook Styles, Bilder und Assembly ins Arbeitsverzeichnis entpacken -->
+	<!-- unpack docbook's style, images, assembly to workdirecotry -->
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-dependency-plugin</artifactId>
 	<executions>
@@ -133,7 +130,7 @@
 	    </parameter>
 	    <parameter>
 	      <name>imageicon</name>
-	      <value>images/wikipedia.png</value>
+	      <value>images/1B7ww3.png</value>
 	    </parameter>
 	  </customizationParameters>
 
