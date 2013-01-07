@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <book version="5.0" xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -31,13 +31,13 @@
       <para>Using Archetypes is a great way enable developers quickly in a way consistent with best practices employed by your project or organization.Within the maven project we use archetypes to try and make our users up and running as quickly as possible by provide a sample project that demonstractes many of features of Maven whild introduce new users to the best practices employed by Maven.In a matter of seconds a new user can have a working Maven project to use as a jumping broad for investigating more of the features in Maven.If, for example, you have use the archetype to generate a working project you can then quickly create a site for that project using the site archetype within the existing project.You can do anything like this with archetypes.</para>
 
       <figure>
-        <title>Maven Archetypes</title>
+	<title>Maven Archetypes</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata contentwidth="2in" fileref="images/wicketMavenArchetype.jpg"></imagedata>
-          </imageobject>
-        </mediaobject>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata contentwidth="2in" fileref="images/wicketMavenArchetype.jpg"></imagedata>
+	  </imageobject>
+	</mediaobject>
       </figure>
     </section>
 
@@ -46,30 +46,35 @@
       <para>to create a project base archetype,you need to call:<literal>mvn archetype:generate</literal> goal, like the following: </para>
       <example>
 	<title>a Maven Archetype sample</title>
-	<programlisting><![CDATA[
-mvn archetype:generate
-]]></programlisting>
+	<programlisting><![CDATA[mvn archetype:generate]]></programlisting>
       </example>
       <para>Please refer to <link xlink:href="http://maven.apache.org/archetype/maven-archetype-plugin/usage.html" >Archetype Plugin Page</link></para>
     </section>
     
     <section>
       <title>Provided Archetypes</title>
-      <para><table>
-	<caption>provided archetyps</caption>
-	<tr>
-	  <th>Archetype artifactids</th>
-	  <th>Description</th>
-	</tr>
-	<tr>
-	  <td>maven-archetype-archetype</td>
-	  <td>An archetype which contains a simple archetype.</td>
-	</tr>
-	<tr>
-	  <td>maven-archetype-plugin</td>
-	  <td>An archetype which contains a simple maven plugin.</td>
-	</tr>
-      </table></para>
+      <informaltable>
+	<tgroup cols="2">
+	  <colspec colwidth="*" colname="archetype artifactids"></colspec>
+	  <colspec colwidth="*" colname="description"></colspec>
+	  <thead>
+	    <row>
+	      <entry>archetype artifactids</entry>
+	      <entry>description</entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>maven-archetype-archetype</entry>
+	      <entry>an archetype which contains a simple archetype.</entry>
+	    </row>
+	    <row>
+	      <entry>maven-archetype-plugin</entry>
+	      <entry>an archetype which contains a simple maven plugin.</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
     </section>
     <section>
       <title>What make a Archetype</title>
@@ -79,520 +84,616 @@ mvn archetype:generate
 
   <chapter>
     <title>Guide to create Archetypes</title>
-    <para>Create a Archetype is pretty streight forward process.</para>
-    <section>
-      <title>Introduction</title>
+    <para>Create a Archetype is pretty streight forward process. an archetype is a simple artifact, it contains the project prototype you wish to create in project.An archetype is made up of:</para>
+
+    <itemizedlist>
+      <listitem><para>an archetype descriptor(archetype.xml in <literal>src/main/resource/META-INF/maven/</literal>,it list all the files that need in archetype and catogrized them so that they can be processed correctly.</para></listitem>
+      <listitem><para>the prototype files coped by archetype plugin in directory <literal>src/main/resource/archetype-resources/</literal></para></listitem>
+      <listitem><para>the prototype pom in <literal>src/main/resources/archetype-resources/</literal></para></listitem>
+      <listitem><para>a pom for the archetype project which in the archetype project's root directory.</para></listitem>
+    </itemizedlist>
+    <note><para>this mini user guide is written for archetype plugin 1.1, in new archetype plugin 2.0.x the archetype descriptor file change to archetype-meta.xml, it's more flexible, has more features, but the basis is absolutely the same.</para></note>
+    <para>to create a archetype project, follows the steps:</para>
+    <procedure>
+      <step><title>Create a new project and pom.xml for the archetype artifact.</title><para>An example pom.xml for archetype artifact looks as follow</para>
+      <informalexample>
+	<programlisting language="xml"><![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>my.groupId</groupId>
+  <artifactId>my-archetype-id</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+</project>
+]]></programlisting>
+      </informalexample>
+      </step>
+      <step><title>Create archetype descriptor <literal>archetype.xml</literal></title><para>the file must located in <literal>src/main/resource/META-INF/maven/</literal>, an example archetype.xml can be found in quickarchetype</para>
+      <informalexample>
+	<programlisting language="xml"><![CDATA[
+<archetype xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0 http://maven.apache.org/xsd/archetype-1.0.0.xsd">
+  <id>quickstart</id>
+  <sources>
+    <source>src/main/java/App.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/AppTest.java</source>
+  </testSources>
+</archetype>
+]]></programlisting>
+      </informalexample>
+      <para>the &lt;id&gt; should the same as artifactid of the pom </para>
+      <para>an optional &lt;allowPartial&gt;true&lt;/allowPartial&gt; which allowed to run <literal>mvn archetype:generate</literal> in an exist project</para>
+      <para>the &lt;sources&gt;,&lt;testSources&gt;,&lt;resources&gt;...tags represents different sections of the projects.<informaltable><tgroup cols="2">
+      <colspec colwidth="*"></colspec>
+      <colspec colwidth="*"></colspec>
+      <tbody>
+	<row>
+	  <entry>&lt;sources&gt;</entry>
+	  <entry>src/main/java</entry>
+	</row>
+	<row>
+	  <entry>&lt;resources&gt;</entry>
+	  <entry>src/main/resources</entry>
+	</row>
+	<row>
+	  <entry>&lt;testSources&gt;</entry>
+	  <entry>src/test/java</entry>
+	</row>
+	<row>
+	  <entry>&lt;testResources&gt;</entry>
+	  <entry>src/test/resources</entry>
+	</row>
+	<row>
+	  <entry>&lt;siteResources&gt;</entry>
+	  <entry>src/site</entry>
+	</row>
+      </tbody>
+      </tgroup></informaltable></para>
+      </step>
+      <step><title>create prototype files and prototype pom.xml</title><para>an example prototype pom.xml looks as follow:</para>
+      <programlisting language="xml" linenumbering="numbered">&lt;project xmlns="http://maven.apache.org/POM/4.0.0" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+      &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
       
-      <para>Maven is a build automation tool typically used for Java projects.
-      Maven serves a similar purpose to the Apache Ant tool, but it is based
-      on different concepts and works in a profoundly different manner. It can
-      also be used to build and manage projects written in C#, Ruby, Scala,
-      and other languages. Maven is hosted by the Apache Software Foundation,
-      where it was formerly part of the Jakarta Project.</para>
+      &lt;groupId&gt;${groupId}&lt;/groupId&gt;
+      &lt;artifactId&gt;${artifactId}&lt;/artifactId&gt;
+      &lt;version&gt;${version}&lt;/version&gt;
+      &lt;packaging&gt;jar&lt;/packaging&gt;
+      &lt;name&gt;A custom project&lt;/name&gt;
+      &lt;url&gt;http://www.myorganization.org&lt;/url&gt;
 
-      <para>Maven uses an XML file to describe the software project being
-      built, its dependencies on other external modules and components, the
-      build order, directories, and required plug-ins. It comes with
-      pre-defined targets for performing certain well-defined tasks such as
-      compilation of code and its packaging.</para>
-
-      <para>Maven dynamically downloads Java libraries and Maven plug-ins from
-      one or more repositories such as the Maven 2 Central Repository. This
-      local cache of downloaded artifacts can also be updated with artifacts
-      created by local projects. Public repositories can also be
-      updated.</para>
-
-      <para>Maven is built using a plugin-based architecture that allows it to
-      make use of any application controllable through standard input.
-      Theoretically, this would allow anyone to write plugins to interface
-      with build tools (compilers, unit test tools, etc.) for any other
-      language. In reality, support and use for languages other than Java has
-      been minimal. Currently a plugin for the .NET framework exists and is
-      maintained, and a C/C++ native plugin is maintained for Maven 2
-      maven-native and maven-nar.</para>
-
-      <figure>
-        <title>Apache Maven</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata contentwidth="2in" fileref="images/maven_logo.gif"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-    </section>
-
-    <section>
-      <title>Example</title>
-
-      <para>Maven projects are configured using a Project Object Model, which
-      is stored in a <filename>pom.xml</filename>-file. Here's a minimal
-      example:</para>
-
-      <example>
-          <title>Maven Example</title>
-
-          <programlisting language="xml">&lt;project&gt;
-  &lt;!-- model version is always 4.0.0 for Maven 2.x POMs --&gt;
-  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
- 
-  &lt;!-- project coordinates, i.e. a group of values which
-       uniquely identify this project --&gt;
-  &lt;groupId&gt;com.mycompany.app&lt;/groupId&gt;
-  &lt;artifactId&gt;my-app&lt;/artifactId&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
- 
-  &lt;!-- library dependencies --&gt;
-  &lt;dependencies&gt;
-    &lt;dependency&gt;
- 
-      &lt;!-- coordinates of the required library --&gt;
+      &lt;dependencies&gt;
+      &lt;dependency&gt;
       &lt;groupId&gt;junit&lt;/groupId&gt;
       &lt;artifactId&gt;junit&lt;/artifactId&gt;
       &lt;version&gt;3.8.1&lt;/version&gt;
- 
-      &lt;!--this dependency is only used for running and compiling tests--&gt;
       &lt;scope&gt;test&lt;/scope&gt;
- 
-    &lt;/dependency&gt;
-  &lt;/dependencies&gt;
-&lt;/project&gt;</programlisting>
-        </example>
-
-      <para>This POM only defines a unique identifier for the project
-      (<emphasis>coordinates</emphasis>) and its dependency on the JUnit
-      framework. However, that is already enough for building the project and
-      running the unit tests associated with the project. Maven accomplishes
-      this by embracing the idea of Convention over Configuration, that is,
-      Maven provides default values for the project's configuration. The
-      directory structure of a normal idiomatic Maven project has the
-      following directory entries:</para>
-
-      <informaltable>
-        <tgroup cols="2">
-          <colspec colwidth="*" />
-
-          <colspec colwidth="*" />
-
-          <tbody>
-            <row>
-              <entry>Directory name</entry>
-
-              <entry>Purpose</entry>
-            </row>
-
-            <row>
-              <entry>project home</entry>
-
-              <entry>Contains the pom.xml and all subdirectories.</entry>
-            </row>
-
-            <row>
-              <entry>src/main/java</entry>
-
-              <entry>Contains the deliverable Java sourcecode for the
-              project.</entry>
-            </row>
-
-            <row>
-              <entry>src/main/resources</entry>
-
-              <entry>Contains the deliverable resources for the project, such
-              as property files.</entry>
-            </row>
-
-            <row>
-              <entry>src/test/java</entry>
-
-              <entry>Contains the testing classes (JUnit or TestNG test cases,
-              for example) for the project.</entry>
-            </row>
-
-            <row>
-              <entry>src/test/resources</entry>
-
-              <entry>Contains resources necessary for testing.</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
-
-      <para>Then the command</para>
-
-      <programlisting>mvn package</programlisting>
-
-      <para>will compile all the Java files, run any tests, and package the
-      deliverable code and resources into
-      <filename>target/my-app-1.0.jar</filename> (assuming the artifactId is
-      my-app and the version is 1.0.) Using Maven itself, the user provides
-      only configuration for the project, while the configurable plug-ins do
-      the actual work of compiling the project, cleaning target directories,
-      running unit tests, generating API documentation and so on. In general,
-      users should not have to write plugins themselves. Contrast this with
-      Ant and make in which one writes imperative procedures for doing the
-      aforementioned tasks.</para>
-    </section>
-
-    <section>
-      <title>Concepts</title>
-
-      <section>
-        <title>Project Object Model</title>
-
-        <para>A Project Object Model (POM) provides all the configuration for
-        a single project. General configuration covers the project's name, its
-        owner and its dependencies on other projects. One can also configure
-        individual phases of the build process, which are implemented as
-        plugins. For example, one can configure the compiler-plugin to use
-        Java version 1.5 for compilation, or specify packaging the project
-        even if some unit test fails. Larger projects should be divided into
-        several modules, or sub-projects, each with its own POM. One can then
-        write a root POM through which one can compile all the modules with a
-        single command. POMs can also inherit configuration from other POMs.
-        All POMs inherit from the Super POM by default. The Super POM provides
-        default configuration, such as default source directories, default
-        plugins, and so on.</para>
-      </section>
-
-      <section>
-        <title>Plugins</title>
-
-        <para>Most of Maven's functionality is in plugins. A plugin provides a
-        set of goals that can be executed using the following syntax:</para>
-
-        <programlisting>mvn [plugin-name]:[goal-name]</programlisting>
-
-        <para>For example, a Java project can be compiled with the
-        compiler-plugin's compile-goal by running mvn
-        <literal>compiler:compile</literal>. There are Maven plugins for
-        building, testing, source control management, running a web server,
-        generating Eclipse project files, and much more. Plugins are
-        introduced and configured in a &lt;plugins&gt;-section of a
-        <filename>pom.xml</filename> file. Some basic plugins are included in
-        every project by default, and they have sensible default
-        settings.</para>
-
-        <para>However, it would be cumbersome if one would have to run several
-        goals manually in order to build, test and package a project:</para>
-
-        <programlisting> mvn compiler:compile
- mvn surefire:test
- mvn jar:jar</programlisting>
-
-        <para>Maven's lifecycle-concept handles this issue.</para>
-      </section>
-
-      <section>
-        <title>Build lifecycles</title>
-
-        <para>Build lifecycle is a list of named <emphasis>phases</emphasis>
-        that can be used to give order to goal execution. One of Maven's
-        standard lifecycles is the <emphasis>default lifecycle</emphasis>,
-        which includes the following phases, in this order:<footnote>
-            <para><link
-            xlink:href="http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference">http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference</link></para>
-          </footnote></para>
-
-        <orderedlist>
-          <listitem>
-            <para><literal>process-resources</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><literal>compile</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><literal>process-test-resources</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><literal>test-compile</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><literal>test</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><literal>package</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><literal>install</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><literal>deploy</literal></para>
-          </listitem>
-        </orderedlist>
-
-        <para>Goals provided by plugins can be associated with different
-        phases of the lifecycle. For example, by default, the goal
-        "compiler:compile" is associated with the compile-phase, while the
-        goal "surefire:test" is associated with the test-phase. When the
-        command</para>
-
-        <programlisting>mvn test</programlisting>
-
-        <para>is executed, Maven will run all the goals associated with each
-        of the phases up to the test-phase. So it will run the
-        "resources:resources"-goal associated with the
-        process-resources-phase, then "compiler:compile", and so on until it
-        finally runs the "surefire:test"-goal. Maven also has standard
-        lifecycles for cleaning the project and for generating a project site.
-        If cleaning were part of the default lifecycle, the project would be
-        cleaned every time it was built. This is clearly undesirable, so
-        cleaning has been given its own lifecycle. Thanks to standard
-        lifecycles, one should be able to build, test and install every
-        Maven-project using the <literal>mvn install</literal>-command.</para>
-      </section>
-
-      <section>
-        <title>Dependencies</title>
-
-        <para>The example section hinted at Maven's dependency-handling
-        mechanism. A project that needs the Hibernate-library simply has to
-        declare Hibernate's project coordinates in its POM. Maven will
-        automatically download the dependency and the dependencies that
-        Hibernate itself needs (called transitive dependencies) and store them
-        in the user's local repository. Maven 2 Central Repository is used by
-        default to search for libraries, but one can configure the
-        repositories used (e.g. company-private repositories) in POM. There
-        are search engines such as Maven Central, which can be used to find
-        out coordinates for different open-source libraries and frameworks.
-        Projects developed on a single machine can depend on each other
-        through the local repository. The local repository is a simple folder
-        structure which acts both as a cache for downloaded dependencies and
-        as a centralized storage place for locally built artifacts. The Maven
-        command <literal>mvn install</literal> builds a project and places its
-        binaries in the local repository. Then other projects can utilize this
-        project by specifying its coordinates in their POMs.</para>
-      </section>
-    </section>
-
-    <section>
-      <title>Comparison with similar tools</title>
-
-      <para>The fundamental difference between Maven and Ant is that Maven's
-      design regards all projects as having a certain structure and a set of
-      supported task work-flows (e.g. getting resources from source control,
-      compiling the project, unit testing, etc.). While most software projects
-      in effect support these operations and actually do have a well-defined
-      structure, Maven requires that this structure and the operation
-      implementation details be defined in the POM file. Thus, Maven relies on
-      a convention on how to define projects and on the list of work-flows
-      that are generally supported in all projects.</para>
-
-      <para>This design constraint is more like how an IDE handles projects
-      and it provides many benefits, such as a succinct project definition and
-      the possibility of automatic integration of a Maven project with other
-      development tools such as IDEs, build servers, etc. The downside is that
-      it requires a user to first understand what a project is from the Maven
-      point of view and how Maven works with projects, because what happens
-      when one executes a phase in Maven is not immediately obvious just from
-      examining the Maven project file. This required structure is also often
-      a barrier in migrating a mature project to Maven because it is usually
-      hard to adapt from other approaches.</para>
-
-      <para>In Ant, projects do not really exist from the tool's technical
-      perspective. Ant works with XML build scripts defined in one or more
-      files. It processes targets from these files and each target executes
-      tasks. Each task performs a technical operation such as running a
-      compiler or copying files around. Tasks are executed primarily in the
-      order given by their defined dependency on other tasks. Thus, Ant is a
-      tool that chains together tasks and executes them based on
-      inter-dependencies and other Boolean conditions.</para>
-
-      <para>The benefits provided by Ant are also numerous. It has an XML
-      language optimized for clearer definition of what each task does and on
-      what it depends. Also, all the information about what will be executed
-      by an Ant target can be found in the Ant script. A developer not
-      familiar with Ant would normally be able to determine what a simple Ant
-      script does just by examining the script. This is not usually true for
-      Maven.</para>
-
-      <para>However, even an experienced developer that is new to a project
-      using Ant cannot infer what the higher level structure of an Ant script
-      is and what it does without examining the script in detail. Depending on
-      the script's complexity, this can quickly become a daunting challenge.
-      With Maven, a developer who previously worked with other Maven projects
-      can quickly examine the structure of a never before seen Maven project
-      and execute the standard Maven work-flows against it while already
-      knowing what to expect as an outcome.</para>
-
-      <para>It is possible to use Ant scripts that are defined and behave in a
-      uniform manner for all projects in a working group or an organization.
-      However, when the number and complexity of projects rises, it is also
-      very easy to stray from the initially desired uniformity. With Maven
-      this is less of a problem because the tool always imposes a certain way
-      of doing things.</para>
-
-      <para>Note that it is also possible to extend and configure Maven in a
-      way that departs from the Maven way of doing things.</para>
-    </section>
-
-    <section>
-      <title>IDE integration</title>
-
-      <para>Add-ons to several popular Integrated Development Environments
-      exist to provide integration of Maven with the IDE's build mechanism and
-      source editing tools, allowing Maven to compile projects from within the
-      IDE, and also to set the classpath for code completion, highlighting
-      compiler errors, etc. Examples of popular IDEs supporting development
-      with Maven include:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para><link
-          xlink:href="http://www.eclipse.org/">Eclipse</link></para>
-        </listitem>
-
-        <listitem>
-          <para><link xlink:href="http://netbeans.org/">NetBeans</link></para>
-        </listitem>
-
-        <listitem>
-          <para><link xlink:href="http://www.jetbrains.com/idea/">IntelliJ
-          IDEA</link></para>
-        </listitem>
-
-        <listitem>
-          <para><link
-          xlink:href="http://www.embarcadero.com/products/jbuilder">JBuilder</link></para>
-        </listitem>
-
-        <listitem>
-          <para><link
-          xlink:href="http://www.oracle.com/technetwork/developer-tools/jdev/overview/index.html">JDeveloper</link></para>
-        </listitem>
-
-        <listitem>
-          <para><link
-          xlink:href="http://www.myeclipseide.com/">MyEclipse</link></para>
-        </listitem>
-      </itemizedlist>
-
-      <para>These add-ons also provide the ability to edit the POM or use the
-      POM to determine a project's complete set of dependencies directly
-      within the IDE.</para>
-
-      <para>Some built-in features of IDEs are forfeited when the IDE no
-      longer performs compilation. For example, Eclipse's JDT has the ability
-      to recompile a single java source file after it has been edited. Many
-      IDEs work with a flat set of projects instead of the hierarchy of
-      folders preferred by Maven. This complicates the use of SCM systems in
-      IDEs when using Maven.</para>
-    </section>
-
-    <section>
-      <title>History</title>
-
-      <para>Maven, created by Sonatype's Jason van Zyl, began as a subproject
-      of Apache Turbine in 2002. In 2003, it was voted on and accepted as a
-      top level Apache Software Foundation project. In July 2004, Maven was
-      released as the critical first milestone, v1.0. Maven 2 was declared
-      v2.0 in October 2005 after about 6 months in beta cycles. Maven 3.0 was
-      released in October 2010 being mostly backwards compatible with Maven
-      2.</para>
-    </section>
-
-    <section>
-      <title>Future</title>
-
-      <para>Maven 3.0 information began trickling out in 2008. After eight
-      alpha releases, the first beta version of Maven 3.0 was released in
-      April 2010. Maven 3.0 has reworked the core Project Builder
-      infrastructure such that the POMs file-based representation is now
-      decoupled from its in-memory object representation. This has expanded
-      the possibility for Maven 3.0 add-ons to leverage non-XML based project
-      definition files. Languages suggested include Ruby (already in private
-      prototype by Jason van Zyl), YAML, and Groovy. Experimental work for a
-      YAML-based POM definition file (requires an external conversion script
-      to be executed) has been piloted by Don Brown of Atlassian. Special
-      attention has been paid to ensuring compatibility between Maven 2 and 3.
-      For most projects, an upgrade to Maven 3 won't require any adjustments
-      of their project structure. The first beta of Maven 3 saw the
-      introduction of a parallel build feature which leverages a configurable
-      number of cores on a multi-core machine and is especially suited for
-      large multi-module projects.</para>
-    </section>
-  </chapter>
-
-  <bibliography>
-    <title>Referenzen</title>
-
-    <bibliomixed><abbrev>DocBook Wikipedia 2012</abbrev><title>Wikipedia Artikel zu
-    DocBook http://en.wikipedia.org/wiki/DocBook</title></bibliomixed>
-
-    <bibliomixed><abbrev>Apache Maven Wikipedia 2012</abbrev><title>Wikipedia
-    Artikel zu Apache Maven
-    http://en.wikipedia.org/wiki/Apache_maven</title></bibliomixed>
-
-    <bibliomixed><abbrev>DocBook 5: The Definitive Guide 2012</abbrev>
-    <title>HTML-Version (1.0.1) des Buchs von Norman Walsh
-    http://www.docbook.org/tdg5/</title></bibliomixed>
-
-    <bibliomixed><abbrev>DocBook XSL: The Complete Guide 2007</abbrev>
-    <title>DocBook 5 Guide von Bob Stayton
-    http://www.sagehill.net/docbookxsl/index.html</title></bibliomixed>
-
-    <bibliomixed><abbrev>DocBook XSL Stylesheets: Reference Documentation</abbrev>
-    <title>Parameter Reference von Norman Walsh
-    http://docbook.xml-doc.org/snapshots/xsl/doc/index.html</title></bibliomixed>
-
-    <bibliomixed><abbrev>Docbkx-Tool 2012</abbrev><title>DocBook Maven Plugin
-    http://docbkx-tools.sourceforge.net/</title></bibliomixed>
-
-    <bibliomixed><abbrev>Docbkx User Guide 2012</abbrev>
-    <title>Beispielkonfigurationen für das Maven Docbkx Plugin
-    http://docbkx-tools.sourceforge.net/docbkx-samples/manual.html</title></bibliomixed>
-
-    <bibliomixed><abbrev>FOP Pdf-Images 2010</abbrev>
-    <title>Erweiterung für Apache FOP um PDF-Images
-    http://www.jeremias-maerki.ch/download/fop/pdf-images/
-    </title></bibliomixed>
-
-    <bibliomixed><abbrev>POM Reference 2012</abbrev><title>Konfiguration einer
-    Maven pom-Datei http://maven.apache.org/pom.html</title></bibliomixed>
-
-    <bibliomixed><abbrev>Processing XML with Java 2002</abbrev>
-    <title>Beschreibung von Elliotte Rusty Harold wie man XSLT um Java erweitert
-    http://cafeconleche.org/books/xmljava/chapters/ch17s03.html</title></bibliomixed>
-
-    <bibliomixed><abbrev>EXSLT 2006</abbrev><title>Erweiterung von XSLT um
-    neue Funktionen http://www.exslt.org/</title></bibliomixed>
-
-    <bibliomixed><abbrev>XML Bible 2001</abbrev><title>Fünf Beispielkapitel
-    aus der XML Bibel von Elliotte Rusty Harold
-    http://www.cafeconleche.org/books/bible2/chapters/</title></bibliomixed>
-
-    <bibliomixed><abbrev>DocBook FAQ</abbrev><title>Häufig gestellte Fragen zu
-    DocBook http://www.dpawson.co.uk/docbook/</title></bibliomixed>
-
-    <bibliomixed><abbrev>XSL FAQ</abbrev><title>Häufig gestellte Fragen zu XSL
-    http://www.dpawson.co.uk/xsl/index.html</title></bibliomixed>
-
-    <bibliomixed><abbrev>Maven Docbook for beginners 2010</abbrev><title>Quick
-    Start für Docbook mit Maven
-    http://www.vineetmanohar.com/2010/02/maven-docbook-for-beginners/</title></bibliomixed>
-
-    <bibliomixed><abbrev>XMLmind XML Editor 2012</abbrev><title>Editor für
-    Docbook-Dokumente http://www.xmlmind.com/xmleditor/</title></bibliomixed>
-
-    <bibliomixed><abbrev>XSL-FO Tutorial 2012</abbrev><title>XSL-FO Tutorial
-    mit Anwendungsbeispielen
-    http://www.data2type.de/xml-xslt-xslfo/xsl-fo</title></bibliomixed>
-
-    <bibliomixed><abbrev>XSL-FO Tutorial 2007</abbrev><title>XSL-FO Tutorial
-    als PDF
-    http://www.ecrion.com/Support/PDF/XSL-FOTutorial.pdf</title></bibliomixed>
-
-    <bibliomixed><abbrev>DocBook Wiki 2012</abbrev><title>Wiki von NormanWalsh
-    über DocBook http://wiki.docbook.org/Home</title></bibliomixed>
-
-    <bibliomixed><abbrev>Using DocBook XSL Stylesheets 2003</abbrev>
-    <title>Anleitung für DocBook XSL Stylesheets von Robert Stayton
-    http://xml.web.cern.ch/XML/www.sagehill.net/xml/docbookxsl/index.html</title></bibliomixed>
-  </bibliography>
-</book>
+      &lt;/dependency&gt;
+      &lt;/dependencies&gt;
+      &lt;/project&gt;
+      </programlisting>
+      </step>
+      <step><title>install the archetype and run the archetype plugin.</title><para></para></step>
+    </procedure>
+   </chapter>
+   <chapter>
+       <title></title>
+
+       <para>Maven is a build automation tool typically used for Java projects.
+       Maven serves a similar purpose to the Apache Ant tool, but it is based
+       on different concepts and works in a profoundly different manner. It can
+       also be used to build and manage projects written in C#, Ruby, Scala,
+       and other languages. Maven is hosted by the Apache Software Foundation,
+       where it was formerly part of the Jakarta Project.</para>
+
+       <para>Maven uses an XML file to describe the software project being
+       built, its dependencies on other external modules and components, the
+       build order, directories, and required plug-ins. It comes with
+       pre-defined targets for performing certain well-defined tasks such as
+       compilation of code and its packaging.</para>
+
+       <para>Maven dynamically downloads Java libraries and Maven plug-ins from
+       one or more repositories such as the Maven 2 Central Repository. This
+       local cache of downloaded artifacts can also be updated with artifacts
+       created by local projects. Public repositories can also be
+       updated.</para>
+
+       <para>Maven is built using a plugin-based architecture that allows it to
+       make use of any application controllable through standard input.
+       Theoretically, this would allow anyone to write plugins to interface
+       with build tools (compilers, unit test tools, etc.) for any other
+       language. In reality, support and use for languages other than Java has
+       been minimal. Currently a plugin for the .NET framework exists and is
+       maintained, and a C/C++ native plugin is maintained for Maven 2
+       maven-native and maven-nar.</para>
+
+       <figure>
+	 <title>Apache Maven</title>
+
+	 <mediaobject>
+	   <imageobject>
+	     <imagedata contentwidth="2in" fileref="images/maven_logo.gif"></imagedata>
+	   </imageobject>
+	 </mediaobject>
+       </figure>
+
+
+     <section>
+       <title>Example</title>
+
+       <para>Maven projects are configured using a Project Object Model, which
+       is stored in a <filename>pom.xml</filename>-file. Here's a minimal
+       example:</para>
+
+       <example>
+	 <title>Maven Example</title>
+
+	 <programlisting language="xml">&lt;project&gt;
+	 &lt;!-- model version is always 4.0.0 for Maven 2.x POMs --&gt;
+	 &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+	 &lt;!-- project coordinates, i.e. a group of values which
+	 uniquely identify this project --&gt;
+	 &lt;groupId&gt;com.mycompany.app&lt;/groupId&gt;
+	 &lt;artifactId&gt;my-app&lt;/artifactId&gt;
+	 &lt;version&gt;1.0&lt;/version&gt;
+
+	 &lt;!-- library dependencies --&gt;
+	 &lt;dependencies&gt;
+	 &lt;dependency&gt;
+
+	 &lt;!-- coordinates of the required library --&gt;
+	 &lt;groupId&gt;junit&lt;/groupId&gt;
+	 &lt;artifactId&gt;junit&lt;/artifactId&gt;
+	 &lt;version&gt;3.8.1&lt;/version&gt;
+
+	 &lt;!--this dependency is only used for running and compiling tests--&gt;
+	 &lt;scope&gt;test&lt;/scope&gt;
+
+	 &lt;/dependency&gt;
+	 &lt;/dependencies&gt;
+	 &lt;/project&gt;</programlisting>
+       </example>
+
+       <para>This POM only defines a unique identifier for the project
+       (<emphasis>coordinates</emphasis>) and its dependency on the JUnit
+       framework. However, that is already enough for building the project and
+       running the unit tests associated with the project. Maven accomplishes
+       this by embracing the idea of Convention over Configuration, that is,
+       Maven provides default values for the project's configuration. The
+       directory structure of a normal idiomatic Maven project has the
+       following directory entries:</para>
+
+       <informaltable>
+	 <tgroup cols="2">
+	   <colspec colwidth="*" />
+
+	   <colspec colwidth="*" />
+
+	   <tbody>
+	     <row>
+	       <entry>Directory name</entry>
+
+	       <entry>Purpose</entry>
+	     </row>
+
+	     <row>
+	       <entry>project home</entry>
+
+	       <entry>Contains the pom.xml and all subdirectories.</entry>
+	     </row>
+
+	     <row>
+	       <entry>src/main/java</entry>
+
+	       <entry>Contains the deliverable Java sourcecode for the
+	       project.</entry>
+	     </row>
+
+	     <row>
+	       <entry>src/main/resources</entry>
+
+	       <entry>Contains the deliverable resources for the project, such
+	       as property files.</entry>
+	     </row>
+
+	     <row>
+	       <entry>src/test/java</entry>
+
+	       <entry>Contains the testing classes (JUnit or TestNG test cases,
+	       for example) for the project.</entry>
+	     </row>
+
+	     <row>
+	       <entry>src/test/resources</entry>
+
+	       <entry>Contains resources necessary for testing.</entry>
+	     </row>
+	   </tbody>
+	 </tgroup>
+       </informaltable>
+
+       <para>Then the command</para>
+
+       <programlisting>mvn package</programlisting>
+
+       <para>will compile all the Java files, run any tests, and package the
+       deliverable code and resources into
+       <filename>target/my-app-1.0.jar</filename> (assuming the artifactId is
+       my-app and the version is 1.0.) Using Maven itself, the user provides
+       only configuration for the project, while the configurable plug-ins do
+       the actual work of compiling the project, cleaning target directories,
+       running unit tests, generating API documentation and so on. In general,
+       users should not have to write plugins themselves. Contrast this with
+       Ant and make in which one writes imperative procedures for doing the
+       aforementioned tasks.</para>
+     </section>
+
+     <section>
+       <title>Concepts</title>
+
+       <section>
+	 <title>Project Object Model</title>
+
+	 <para>A Project Object Model (POM) provides all the configuration for
+	 a single project. General configuration covers the project's name, its
+	 owner and its dependencies on other projects. One can also configure
+	 individual phases of the build process, which are implemented as
+	 plugins. For example, one can configure the compiler-plugin to use
+	 Java version 1.5 for compilation, or specify packaging the project
+	 even if some unit test fails. Larger projects should be divided into
+	 several modules, or sub-projects, each with its own POM. One can then
+	 write a root POM through which one can compile all the modules with a
+	 single command. POMs can also inherit configuration from other POMs.
+	 All POMs inherit from the Super POM by default. The Super POM provides
+	 default configuration, such as default source directories, default
+	 plugins, and so on.</para>
+       </section>
+
+       <section>
+	 <title>Plugins</title>
+
+	 <para>Most of Maven's functionality is in plugins. A plugin provides a
+	 set of goals that can be executed using the following syntax:</para>
+
+	 <programlisting>mvn [plugin-name]:[goal-name]</programlisting>
+
+	 <para>For example, a Java project can be compiled with the
+	 compiler-plugin's compile-goal by running mvn
+	 <literal>compiler:compile</literal>. There are Maven plugins for
+	 building, testing, source control management, running a web server,
+	 generating Eclipse project files, and much more. Plugins are
+	 introduced and configured in a &lt;plugins&gt;-section of a
+	 <filename>pom.xml</filename> file. Some basic plugins are included in
+	 every project by default, and they have sensible default
+	 settings.</para>
+
+	 <para>However, it would be cumbersome if one would have to run several
+	 goals manually in order to build, test and package a project:</para>
+
+	 <programlisting> mvn compiler:compile
+	 mvn surefire:test
+	 mvn jar:jar</programlisting>
+
+	 <para>Maven's lifecycle-concept handles this issue.</para>
+       </section>
+
+       <section>
+	 <title>Build lifecycles</title>
+
+	 <para>Build lifecycle is a list of named <emphasis>phases</emphasis>
+	 that can be used to give order to goal execution. One of Maven's
+	 standard lifecycles is the <emphasis>default lifecycle</emphasis>,
+	 which includes the following phases, in this order:<footnote>
+	 <para><link
+		   xlink:href="http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference">http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference</link></para>
+	 </footnote></para>
+
+	 <orderedlist>
+	   <listitem>
+	     <para><literal>process-resources</literal></para>
+	   </listitem>
+
+	   <listitem>
+	     <para><literal>compile</literal></para>
+	   </listitem>
+
+	   <listitem>
+	     <para><literal>process-test-resources</literal></para>
+	   </listitem>
+
+	   <listitem>
+	     <para><literal>test-compile</literal></para>
+	   </listitem>
+
+	   <listitem>
+	     <para><literal>test</literal></para>
+	   </listitem>
+
+	   <listitem>
+	     <para><literal>package</literal></para>
+	   </listitem>
+
+	   <listitem>
+	     <para><literal>install</literal></para>
+	   </listitem>
+
+	   <listitem>
+	     <para><literal>deploy</literal></para>
+	   </listitem>
+	 </orderedlist>
+
+	 <para>Goals provided by plugins can be associated with different
+	 phases of the lifecycle. For example, by default, the goal
+	 "compiler:compile" is associated with the compile-phase, while the
+	 goal "surefire:test" is associated with the test-phase. When the
+	 command</para>
+
+	 <programlisting>mvn test</programlisting>
+
+	 <para>is executed, Maven will run all the goals associated with each
+	 of the phases up to the test-phase. So it will run the
+	 "resources:resources"-goal associated with the
+	 process-resources-phase, then "compiler:compile", and so on until it
+	 finally runs the "surefire:test"-goal. Maven also has standard
+	 lifecycles for cleaning the project and for generating a project site.
+	 If cleaning were part of the default lifecycle, the project would be
+	 cleaned every time it was built. This is clearly undesirable, so
+	 cleaning has been given its own lifecycle. Thanks to standard
+	 lifecycles, one should be able to build, test and install every
+	 Maven-project using the <literal>mvn install</literal>-command.</para>
+       </section>
+
+       <section>
+	 <title>Dependencies</title>
+
+	 <para>The example section hinted at Maven's dependency-handling
+	 mechanism. A project that needs the Hibernate-library simply has to
+	 declare Hibernate's project coordinates in its POM. Maven will
+	 automatically download the dependency and the dependencies that
+	 Hibernate itself needs (called transitive dependencies) and store them
+	 in the user's local repository. Maven 2 Central Repository is used by
+	 default to search for libraries, but one can configure the
+	 repositories used (e.g. company-private repositories) in POM. There
+	 are search engines such as Maven Central, which can be used to find
+	 out coordinates for different open-source libraries and frameworks.
+	 Projects developed on a single machine can depend on each other
+	 through the local repository. The local repository is a simple folder
+	 structure which acts both as a cache for downloaded dependencies and
+	 as a centralized storage place for locally built artifacts. The Maven
+	 command <literal>mvn install</literal> builds a project and places its
+	 binaries in the local repository. Then other projects can utilize this
+	 project by specifying its coordinates in their POMs.</para>
+       </section>
+     </section>
+
+     <section>
+       <title>Comparison with similar tools</title>
+
+       <para>The fundamental difference between Maven and Ant is that Maven's
+       design regards all projects as having a certain structure and a set of
+       supported task work-flows (e.g. getting resources from source control,
+       compiling the project, unit testing, etc.). While most software projects
+       in effect support these operations and actually do have a well-defined
+       structure, Maven requires that this structure and the operation
+       implementation details be defined in the POM file. Thus, Maven relies on
+       a convention on how to define projects and on the list of work-flows
+       that are generally supported in all projects.</para>
+
+       <para>This design constraint is more like how an IDE handles projects
+       and it provides many benefits, such as a succinct project definition and
+       the possibility of automatic integration of a Maven project with other
+       development tools such as IDEs, build servers, etc. The downside is that
+       it requires a user to first understand what a project is from the Maven
+       point of view and how Maven works with projects, because what happens
+       when one executes a phase in Maven is not immediately obvious just from
+       examining the Maven project file. This required structure is also often
+       a barrier in migrating a mature project to Maven because it is usually
+       hard to adapt from other approaches.</para>
+
+       <para>In Ant, projects do not really exist from the tool's technical
+       perspective. Ant works with XML build scripts defined in one or more
+       files. It processes targets from these files and each target executes
+       tasks. Each task performs a technical operation such as running a
+       compiler or copying files around. Tasks are executed primarily in the
+       order given by their defined dependency on other tasks. Thus, Ant is a
+       tool that chains together tasks and executes them based on
+       inter-dependencies and other Boolean conditions.</para>
+
+       <para>The benefits provided by Ant are also numerous. It has an XML
+       language optimized for clearer definition of what each task does and on
+       what it depends. Also, all the information about what will be executed
+       by an Ant target can be found in the Ant script. A developer not
+       familiar with Ant would normally be able to determine what a simple Ant
+       script does just by examining the script. This is not usually true for
+       Maven.</para>
+
+       <para>However, even an experienced developer that is new to a project
+       using Ant cannot infer what the higher level structure of an Ant script
+       is and what it does without examining the script in detail. Depending on
+       the script's complexity, this can quickly become a daunting challenge.
+       With Maven, a developer who previously worked with other Maven projects
+       can quickly examine the structure of a never before seen Maven project
+       and execute the standard Maven work-flows against it while already
+       knowing what to expect as an outcome.</para>
+
+       <para>It is possible to use Ant scripts that are defined and behave in a
+       uniform manner for all projects in a working group or an organization.
+       However, when the number and complexity of projects rises, it is also
+       very easy to stray from the initially desired uniformity. With Maven
+       this is less of a problem because the tool always imposes a certain way
+       of doing things.</para>
+
+       <para>Note that it is also possible to extend and configure Maven in a
+       way that departs from the Maven way of doing things.</para>
+     </section>
+
+     <section>
+       <title>IDE integration</title>
+
+       <para>Add-ons to several popular Integrated Development Environments
+       exist to provide integration of Maven with the IDE's build mechanism and
+       source editing tools, allowing Maven to compile projects from within the
+       IDE, and also to set the classpath for code completion, highlighting
+       compiler errors, etc. Examples of popular IDEs supporting development
+       with Maven include:</para>
+
+       <itemizedlist>
+	 <listitem>
+	   <para><link
+		     xlink:href="http://www.eclipse.org/">Eclipse</link></para>
+	 </listitem>
+
+	 <listitem>
+	   <para><link xlink:href="http://netbeans.org/">NetBeans</link></para>
+	 </listitem>
+
+	 <listitem>
+	   <para><link xlink:href="http://www.jetbrains.com/idea/">IntelliJ
+	   IDEA</link></para>
+	 </listitem>
+
+	 <listitem>
+	   <para><link
+		     xlink:href="http://www.embarcadero.com/products/jbuilder">JBuilder</link></para>
+	 </listitem>
+
+	 <listitem>
+	   <para><link
+		     xlink:href="http://www.oracle.com/technetwork/developer-tools/jdev/overview/index.html">JDeveloper</link></para>
+	 </listitem>
+
+	 <listitem>
+	   <para><link
+		     xlink:href="http://www.myeclipseide.com/">MyEclipse</link></para>
+	 </listitem>
+       </itemizedlist>
+
+       <para>These add-ons also provide the ability to edit the POM or use the
+       POM to determine a project's complete set of dependencies directly
+       within the IDE.</para>
+
+       <para>Some built-in features of IDEs are forfeited when the IDE no
+       longer performs compilation. For example, Eclipse's JDT has the ability
+       to recompile a single java source file after it has been edited. Many
+       IDEs work with a flat set of projects instead of the hierarchy of
+       folders preferred by Maven. This complicates the use of SCM systems in
+       IDEs when using Maven.</para>
+     </section>
+
+     <section>
+       <title>History</title>
+
+       <para>Maven, created by Sonatype's Jason van Zyl, began as a subproject
+       of Apache Turbine in 2002. In 2003, it was voted on and accepted as a
+       top level Apache Software Foundation project. In July 2004, Maven was
+       released as the critical first milestone, v1.0. Maven 2 was declared
+       v2.0 in October 2005 after about 6 months in beta cycles. Maven 3.0 was
+       released in October 2010 being mostly backwards compatible with Maven
+       2.</para>
+     </section>
+
+     <section>
+       <title>Future</title>
+
+       <para>Maven 3.0 information began trickling out in 2008. After eight
+       alpha releases, the first beta version of Maven 3.0 was released in
+       April 2010. Maven 3.0 has reworked the core Project Builder
+       infrastructure such that the POMs file-based representation is now
+       decoupled from its in-memory object representation. This has expanded
+       the possibility for Maven 3.0 add-ons to leverage non-XML based project
+       definition files. Languages suggested include Ruby (already in private
+       prototype by Jason van Zyl), YAML, and Groovy. Experimental work for a
+       YAML-based POM definition file (requires an external conversion script
+       to be executed) has been piloted by Don Brown of Atlassian. Special
+       attention has been paid to ensuring compatibility between Maven 2 and 3.
+       For most projects, an upgrade to Maven 3 won't require any adjustments
+       of their project structure. The first beta of Maven 3 saw the
+       introduction of a parallel build feature which leverages a configurable
+       number of cores on a multi-core machine and is especially suited for
+       large multi-module projects.</para>
+     </section>
+   </chapter>
+
+   <bibliography>
+     <title>Referenzen</title>
+
+     <bibliomixed><abbrev>DocBook Wikipedia 2012</abbrev><title>Wikipedia Artikel zu
+     DocBook http://en.wikipedia.org/wiki/DocBook</title></bibliomixed>
+
+     <bibliomixed><abbrev>Apache Maven Wikipedia 2012</abbrev><title>Wikipedia
+     Artikel zu Apache Maven
+     http://en.wikipedia.org/wiki/Apache_maven</title></bibliomixed>
+
+     <bibliomixed><abbrev>DocBook 5: The Definitive Guide 2012</abbrev>
+     <title>HTML-Version (1.0.1) des Buchs von Norman Walsh
+     http://www.docbook.org/tdg5/</title></bibliomixed>
+
+     <bibliomixed><abbrev>DocBook XSL: The Complete Guide 2007</abbrev>
+     <title>DocBook 5 Guide von Bob Stayton
+     http://www.sagehill.net/docbookxsl/index.html</title></bibliomixed>
+
+     <bibliomixed><abbrev>DocBook XSL Stylesheets: Reference Documentation</abbrev>
+     <title>Parameter Reference von Norman Walsh
+     http://docbook.xml-doc.org/snapshots/xsl/doc/index.html</title></bibliomixed>
+
+     <bibliomixed><abbrev>Docbkx-Tool 2012</abbrev><title>DocBook Maven Plugin
+     http://docbkx-tools.sourceforge.net/</title></bibliomixed>
+
+     <bibliomixed><abbrev>Docbkx User Guide 2012</abbrev>
+     <title>Beispielkonfigurationen für das Maven Docbkx Plugin
+     http://docbkx-tools.sourceforge.net/docbkx-samples/manual.html</title></bibliomixed>
+
+     <bibliomixed><abbrev>FOP Pdf-Images 2010</abbrev>
+     <title>Erweiterung für Apache FOP um PDF-Images
+     http://www.jeremias-maerki.ch/download/fop/pdf-images/
+     </title></bibliomixed>
+
+     <bibliomixed><abbrev>POM Reference 2012</abbrev><title>Konfiguration einer
+     Maven pom-Datei http://maven.apache.org/pom.html</title></bibliomixed>
+
+     <bibliomixed><abbrev>Processing XML with Java 2002</abbrev>
+     <title>Beschreibung von Elliotte Rusty Harold wie man XSLT um Java erweitert
+     http://cafeconleche.org/books/xmljava/chapters/ch17s03.html</title></bibliomixed>
+
+     <bibliomixed><abbrev>EXSLT 2006</abbrev><title>Erweiterung von XSLT um
+     neue Funktionen http://www.exslt.org/</title></bibliomixed>
+
+     <bibliomixed><abbrev>XML Bible 2001</abbrev><title>Fünf Beispielkapitel
+     aus der XML Bibel von Elliotte Rusty Harold
+     http://www.cafeconleche.org/books/bible2/chapters/</title></bibliomixed>
+
+     <bibliomixed><abbrev>DocBook FAQ</abbrev><title>Häufig gestellte Fragen zu
+     DocBook http://www.dpawson.co.uk/docbook/</title></bibliomixed>
+
+     <bibliomixed><abbrev>XSL FAQ</abbrev><title>Häufig gestellte Fragen zu XSL
+     http://www.dpawson.co.uk/xsl/index.html</title></bibliomixed>
+
+     <bibliomixed><abbrev>Maven Docbook for beginners 2010</abbrev><title>Quick
+     Start für Docbook mit Maven
+     http://www.vineetmanohar.com/2010/02/maven-docbook-for-beginners/</title></bibliomixed>
+
+     <bibliomixed><abbrev>XMLmind XML Editor 2012</abbrev><title>Editor für
+     Docbook-Dokumente http://www.xmlmind.com/xmleditor/</title></bibliomixed>
+
+     <bibliomixed><abbrev>XSL-FO Tutorial 2012</abbrev><title>XSL-FO Tutorial
+     mit Anwendungsbeispielen
+     http://www.data2type.de/xml-xslt-xslfo/xsl-fo</title></bibliomixed>
+
+     <bibliomixed><abbrev>XSL-FO Tutorial 2007</abbrev><title>XSL-FO Tutorial
+     als PDF
+     http://www.ecrion.com/Support/PDF/XSL-FOTutorial.pdf</title></bibliomixed>
+
+     <bibliomixed><abbrev>DocBook Wiki 2012</abbrev><title>Wiki von NormanWalsh
+     über DocBook http://wiki.docbook.org/Home</title></bibliomixed>
+
+     <bibliomixed><abbrev>Using DocBook XSL Stylesheets 2003</abbrev>
+     <title>Anleitung für DocBook XSL Stylesheets von Robert Stayton
+     http://xml.web.cern.ch/XML/www.sagehill.net/xml/docbookxsl/index.html</title></bibliomixed>
+   </bibliography>
+ </book>

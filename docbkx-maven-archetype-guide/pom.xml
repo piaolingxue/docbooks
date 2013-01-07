@@ -80,7 +80,7 @@
 	    <id>generate-userguide</id>
 	    <goals>
 	      <!-- PDF und HTML Ausgabe erzeugen -->
-	      <!--<goal>generate-pdf</goal>-->
+ 	      <goal>generate-pdf</goal>
 	      <goal>generate-html</goal>
 	      <!--<goal>generate-webhelp</goal>-->
 	    </goals>
