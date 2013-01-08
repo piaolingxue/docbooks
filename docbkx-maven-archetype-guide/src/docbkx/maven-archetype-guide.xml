@@ -97,8 +97,7 @@
     <procedure>
       <step><title>Create a new project and pom.xml for the archetype artifact.</title><para>An example pom.xml for archetype artifact looks as follow</para>
       <informalexample>
-	<programlisting language="xml"><![CDATA[
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	<programlisting language="xml"><![CDATA[<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -112,8 +111,7 @@
       </step>
       <step><title>Create archetype descriptor <literal>archetype.xml</literal></title><para>the file must located in <literal>src/main/resource/META-INF/maven/</literal>, an example archetype.xml can be found in quickarchetype</para>
       <informalexample>
-	<programlisting language="xml"><![CDATA[
-<archetype xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	<programlisting language="xml"><![CDATA[<archetype xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0 http://maven.apache.org/xsd/archetype-1.0.0.xsd">
   <id>quickstart</id>
   <sources>
