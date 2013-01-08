@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:m="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook" xml:lang="zh">
+  <info>
+    <title>如何让docbkx支持中文?</title>
+
+    <subtitle>how to set docbkx to support Chinese?</subtitle>
+
+    <releaseinfo>Snapshot Version</releaseinfo>
+
+    <author>
+      <personname>李斌</personname>
+    </author>
+
+    <pubdate>01.08.2013</pubdate>
+  </info>
+  
+  <chapter>
+    <title>设置详解</title>
+
+    <section>
+      <title>论文中常用的字体</title>
+      <section>
+	<title>中文字体</title>
+	<para>宋体、黑体</para>
+      </section>
+      <section>
+	<title>英文字体</title>
+	<para>Times New Roman</para>
+      </section>
+    </section>
+    
+    <section>
+      <title>添加一个新字体</title>
+      <para>工具准备:fop1.1 将关联jar(avalon-framework-4.2.0.jar:batik-all-1.7.jar:commons-io-1.3.1.jar:commons-logging-1.0.4.jar:fop.jar:serializer-2.7.0.jar:xalan-2.7.0.jar:xercesImpl-2.7.1.jar:xml-apis-1.3.04.jar:xml-apis-ext-1.3.04.jar:xmlgraphics-commons-1.5.jar)放到java classpath上,如下:<programlisting>CLASSPATH=avalon-framework-4.2.0.jar:batik-all-1.7.jar:commons-io-1.3.1.jar:
+commons-logging-1.0.4.jar:fop.jar:serializer-2.7.0.jar:xalan-2.7.0.jar:xercesImpl-2.7.1.jar:xml-apis-1.3.04.jar:xml-apis-ext-1.3.04.jar:xmlgraphics-commons-1.5.jar</programlisting></para>
+      <example>
+	<title>add simsun.ttf(标准宋体)</title>
+	<procedure>
+	  <step><para>copy simsun.ttf to /fop1.1/generate-fonts/</para></step>
+	  <step><para>run the command:<programlisting>java org.apache.fop.fonts.apps.TTFReader simsun.ttf simsun.xml</programlisting></para></step>
+	  <step><para>copy the simsun.ttf and simsun.xml to the style directory of your project. e.g. projects/style/fonts/simsun/</para></step>
+	  <step><para>add the font to your pom.xml<programlisting language="xml"><![CDATA[<fonts>
+	<!-- chinese font -->
+	<font>
+	<name>SimSun</name>
+	<style>normal</style>
+	<weight>normal</weight>
+	<embedFile>${workDirectory}/styles/fonts/simsun/simsun.ttf</embedFile>
+	<metricsFile>${workDirectory}/styles/fonts/simsun/simsun.xml</metricsFile>
+	</font>
+</fonts>]]></programlisting></para></step>
+	  <step><para>then you can ref this font by 'SimSun',.e.g 在fop中设置标题的字体<programlistingco><areaspec><area xml:id="font-co" linkends="font" coords="1 30"></area></areaspec><programlisting language="xml"><![CDATA[<xsl:param name="title.font.family">SimSun</xsl:param>]]></programlisting><calloutlist><callout xml:id="font" arearefs="font-co"><para>可以设置多个字体，字体间用逗号隔开,e.g Times New Roman,SimSun</para></callout></calloutlist></programlistingco></para></step>
+	</procedure>
+      </example>
+    </section>
+
+  </chapter>
+
+  <bibliography>
+    <title>参考资料</title>
+
+    <bibliomixed><abbrev>Create Multi Language PDF</abbrev><title>Create Multi Language PDF Using Apache FOP<link xlink:href="http://www.javaranch.com/journal/200409/CreatingMultipleLanguagePDFusingApacheFOP.html">http://www.javaranch.com/journal/200409/CreatingMultipleLanguagePDFusingApacheFOP.html</link></title></bibliomixed>
+
+    <bibliomixed><abbrev>Fo Parameter Refs</abbrev><title>Fo Parameter Reference<link xlink:href="http://docbook.sourceforge.net/release/xsl/1.77.1/doc/fo/">http://docbook.sourceforge.net/release/xsl/1.77.1/doc/fo/</link></title></bibliomixed>
+
+  </bibliography>
+</book>
